@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cat "$1" |
+  grep -oE "src=[\"'][^\"']+" |
+  grep -oE "[^\"' ]+\.js" |
+  xargs node "$(dirname -- "$0")"/convert-to-esm.js
