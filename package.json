@@ -5,7 +5,9 @@
   "main": "convert-to-esm.js",
   "dependencies": {
     "escope": "^3.6.0",
-    "espree": "^5.0.0"
+    "eslint": "^5.12.1",
+    "espree": "^5.0.0",
+    "object.fromentries": "^2.0.0"
   },
   "devDependencies": {},
   "scripts": {

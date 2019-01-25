@@ -5,8 +5,13 @@
 
 const {parse} = require("espree");
 const {analyze} = require("escope");
+const {Linter} = require("eslint");
 const {readFile, writeFile} = require("fs").promises;
 const {relative, dirname} = require("path");
+const rewriteDeleteRule = require("./rewrite-delete.js");
+
+const fromEntries = require("object.fromentries");
+
 const args = process.argv.slice(2);
 
 class Globals {
@@ -14,11 +19,13 @@ class Globals {
         this.defines = new Map();
     }
     async analyze(fileName) {
-        const code = await readFile(fileName, "utf-8");
-        const ast = parse(code, {
+        const parserOptions = {
             ecmaVersion: 2019,
             sourceType: "script",
-        });
+        };
+        let code = await readFile(fileName, "utf-8");
+        code = this.fix(code, [rewriteDeleteRule], parserOptions);
+        const ast = parse(code, parserOptions);
         const scope = analyze(ast).acquire(ast);
         const uses = new Set(scope.through.map(v => v.identifier.name));
         const defines = [...scope.variables, ...scope.implicit.variables]
@@ -29,6 +36,13 @@ class Globals {
             code
         ].join("\n");
         return {code, defines, uses, rewrittenCode};
+    }
+    fix(code, rules = [], parserOptions = {}) {
+        const linter = new Linter();
+        rules.forEach((v, i) => (linter.defineRule(String(i), v)));
+        return linter.verifyAndFix(code,
+            {rules: fromEntries(rules.map((_, i) => [i, "error"])),
+            parserOptions}).output;
     }
     async add(fileName) {
         for (const define of (await this.analyze(fileName)).defines) {
