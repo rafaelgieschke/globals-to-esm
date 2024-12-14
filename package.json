@@ -4,12 +4,11 @@
   "description": "",
   "main": "convert-to-esm.js",
   "dependencies": {
-    "escope": "^3.6.0",
-    "eslint": "^5.12.1",
-    "espree": "^5.0.0",
-    "object.fromentries": "^2.0.0"
+    "escope": "^4.0.0",
+    "eslint": "^8.57.1",
+    "espree": "^10.3.0",
+    "object.fromentries": "^2.0.8"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
