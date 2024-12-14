@@ -51,8 +51,9 @@ class Globals {
     }
     async rewrite(fileName) {
         const imports = [];
-        const {uses, rewrittenCode} = await this.analyze(fileName);
+        const {uses, defines, rewrittenCode} = await this.analyze(fileName);
         for (const use of uses) {
+            if (defines.includes(use)) continue;
             if (this.defines.has(use) && this.defines.get(use) !== fileName) {
                 imports.push(
                     `import {${use}} from "./${relative(dirname(fileName),
