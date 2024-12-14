@@ -26,7 +26,7 @@ class Globals {
         let code = await readFile(fileName, "utf-8");
         code = this.fix(code, [rewriteDeleteRule], parserOptions);
         const ast = parse(code, parserOptions);
-        const scope = analyze(ast, {ecmaVersion: parserOptions.ecmaVersion}).acquire(ast);
+        const scope = analyze(ast, {ecmaVersion: parserOptions.ecmaVersion, ignoreEval: true}).acquire(ast);
         const uses = new Set(scope.through.map(v => v.identifier.name));
         const defines = [...scope.variables, ...scope.implicit.variables]
             .map(v => v.name)
